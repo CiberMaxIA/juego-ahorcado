@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Juego del Ahorcado</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Juego del Ahorcado</h1>
+
+        <canvas id="hangman-drawing" width="200" height="200"></canvas>
+        <div id="word-display"></div>
+        <div id="used-letters"></div>
+
+        <input type="text" id="letter-input">
+        <button onclick="guessLetter()">Adivinar</button>
+
+        <form action="/reset" method="POST">
+            <button type="submit">Nuevo Juego</button>
+        </form>
+
+        <a href="/" class="button">Gestionar Palabras</a>
+    </div>
+
+    <script>
+        const word = '<%= word %>';
+    </script>
+    <script src="/js/game.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gestión de Palabras - Ahorcado</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <style>
+            .delete-btn {
+                background-color: #ff4444;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 25px;
+                height: 25px;
+                margin-left: 10px;
+                cursor: pointer;
+            }
+            .word-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 5px 0;
+            }
+            #word-list {
+                list-style: none;
+                padding: 0;
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .container {
+                text-align: center;
+            }
+        </style>
+    </head>
+<body>
+    <div class="container">
+        <h1>Gestión de Palabras</h1>
+        
+        <form action="/add-word" method="POST">
+            <input type="text" name="word" placeholder="Ingresa una nueva palabra" required>
+            <button type="submit">Agregar Palabra</button>
+        </form>
+
+        <h2>Palabras Disponibles:</h2>
+        <ul id="word-list">
+            <% words.forEach(word => { %>
+                <li class="word-item" data-word="<%= word %>">
+                    <span><%= word %></span>
+                    <button class="delete-btn" onclick="deleteWord(this)">X</button>
+                </li>
+            <% }); %>
+        </ul>
+
+        <a href="/game" class="button" onclick="return checkWords()">Ir al Juego</a>
+    </div>
+
+    <script>
+        function deleteWord(button) {
+            const listItem = button.parentElement;
+            const word = listItem.dataset.word;
+            
+            // Obtener todas las palabras excepto la eliminada
+            const remainingWords = Array.from(document.querySelectorAll('#word-list li'))
+                .filter(item => item !== listItem)
+                .map(item => item.dataset.word);
+
+            fetch('/add-word', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    words: remainingWords,
+                    action: 'update'
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    listItem.remove();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        function checkWords() {
+            const wordList = document.querySelectorAll('#word-list li');
+            if (wordList.length === 0) {
+                alert('La lista de palabras está vacía. Por favor, agrega una o más palabras para continuar.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
